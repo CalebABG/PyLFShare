@@ -7,12 +7,12 @@ Python 3.x Struct pack/unpack => https://docs.python.org/3/library/struct.html
 """
 
 # data portion is not included in header
-# index:   0 or (-6)        1 or (-5)        2 or (-4)      3 or (-3)      4 or (-2)     5 or (-1)
-#       |   unsigned   |      unsigned     |  unsigned  |    signed     |  unsigned   | binary data
-#       |   4 bytes    |       4 bytes     |   4 bytes  |   4 bytes     |   2 bytes   | ? bytes
-#       | source_port  | destination_port  | checksum   | sequence_num  | packet_size |  data
+# index:   0 or (-6)           1 or (-5)           2 or (-4)           3 or (-3)         4 or (-2)        5 or (-1)
+#       |  unsigned short   |  unsigned short   |  unsigned short   |  signed int     |  unsigned int  |  binary data
+#       |  2 bytes          |  2 bytes          |  2 bytes          |  4 bytes        |  4 bytes       |  ? bytes
+#       |  source_port      |  destination_port |  checksum         |  sequence_num   |  packet_size   |  data
 packet_ack_format = "i"
-packet_header_format = "3I{}I".format(packet_ack_format)
+packet_header_format = "3H{}I".format(packet_ack_format)
 
 # header length in bytes
 packet_header_size = struct.calcsize(packet_header_format)
@@ -57,14 +57,14 @@ def read_file(file_path, source_port, destination_port):
 
         while True:
             if use_mtu_read_size:
-                file_bytes_read = input_file.read(udp_mtu_size - 24)
+                bytes_read = input_file.read(udp_mtu_size - 24)
             else:
-                file_bytes_read = input_file.read(file_read_size)
+                bytes_read = input_file.read(file_read_size)
 
-            if not file_bytes_read:
+            if not bytes_read:
                 break
 
-            packet = create_packet(source_port, destination_port, seq_num, file_bytes_read)
+            packet = create_packet(source_port, destination_port, seq_num, bytes_read)
             file_packets.append(packet)
             seq_num += 1
 

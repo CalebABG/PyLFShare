@@ -55,7 +55,7 @@ class Client:
                         print("Invalid port, please try send command again; err: {}".format(porterr))
                         continue
 
-                    print("File: {} - Size: {}".format(file_path, os.stat(file_path).st_size))
+                    print("File: {} - Size (bytes): {}".format(file_path, os.stat(file_path).st_size))
                     print("Sending File in 5 seconds")
                     time.sleep(5)
                     self.send_file(file_path, dest_ip, self.port, dest_port)
